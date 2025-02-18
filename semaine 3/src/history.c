@@ -18,9 +18,21 @@ struct page {
  * @return la structure history et NULL en cas d'erreur d'allocation de mémoire 
  */
 struct history *history_new() {
-    // TODO
+    //On va crée les differents objets et on alloue de la memoir   
+    struct history *new_history = malloc(sizeof(struct history)); 
     
-    return NULL;
+    // On initialise les valeurs de first et current à NULL
+
+    new_history->current == NULL;
+    new_history->first == NULL;
+
+    //on teste si history est null
+    if(new_history == NULL){
+        return NULL;
+    }
+
+    // On retourne l'history initialisé
+    return new_history;
 }
 
 /**
@@ -54,9 +66,27 @@ struct history *history_new() {
  
  */
 int history_add(struct history *h, char *url) {
-    // TODO
+    struct page *new_page = malloc(sizeof(struct page));
+
+    if (!h || !url) return -1;  
+    if (!new_page) return -1;
+
+
+    new_page->url = url;
+    new_page->next = NULL;
+
+    if (h->first == NULL) { 
+        h->first = new_page;
+        h->current = new_page;
+        new_page->prev = NULL;
+    } else {  
+        new_page->prev = h->current;
+        h->current->next = new_page;
+        h->current = new_page;
+    }
     
-    return -1;
+
+    return 0;
 }
 
 /**
@@ -68,7 +98,14 @@ int history_add(struct history *h, char *url) {
  * @return 1 si le déplacement a réussi, 0 sinon
  */
 int go_back(struct history *h) {
-    // TODO
+    if(h->current->prev != NULL){
+        h->current = h->current->prev;
+        return 1;
+    }
+    if (!h || !h->current) return 0;
+    {
+        return 0;
+    }
     
     return 0;
 }
@@ -82,7 +119,14 @@ int go_back(struct history *h) {
  * @return 1 si le déplacement a réussi, 0 sinon
  */
 int go_forward(struct history *h) {
-    // TODO
+    if(h->current->next != NULL){
+        h->current = h->current->next;
+        return 1;
+    }
+    if (!h || !h->current->next) return 0;
+    {
+        return 0;
+    }
     
     return 0;
 }
@@ -93,7 +137,17 @@ int go_forward(struct history *h) {
  * @param h la structure history
  */
 void history_free(struct history *h) {
-    // TODO
+    
+    if (!h) return;  
+
+    struct page *current = h->first;
+    while (current) {
+        struct page *next = current->next; 
+        free(current);  
+        current = next; 
+    }
+
+    free(h);
     
 }
 
